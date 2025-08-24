@@ -1,0 +1,58 @@
+services:
+  # Backend API Service
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    networks:
+      - video-library
+
+  # Frontend Service
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - api
+    networks:
+      - video-library
+
+  # Database Service
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=video_library
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - video-library
+
+volumes:
+  postgres_data:
+
+networks:
+  video-library:
+    driver: bridge 
