@@ -16,7 +16,6 @@ export default async function Page({ searchParams }: PageProps) {
     <Suspense fallback={<Loading />}>
       <VideoLibraryClient 
         initialData={initialData}
-        searchParams={searchParams}
       />
     </Suspense>
   );

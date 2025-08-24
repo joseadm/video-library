@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { VideoCard } from "@/components/video-card";
-import { VideoRecord, VideoData, SearchParams } from "@/types";
+import { VideoRecord, VideoData } from "@/types";
 import { SearchForm } from "@/components/search-form";
 import { Pagination } from "@/components/pagination";
 import { SortSelect } from "@/components/sort-select";
@@ -10,13 +10,13 @@ import { RetryNotice } from "@/components/retry-notice";
 import { useVideoPage } from "@/hooks/use-video-page";
 import { useSearchParams } from "next/navigation";
 
+
 interface VideoLibraryClientProps {
   initialData: VideoData;
-  searchParams: SearchParams;
 }
 
-export function VideoLibraryClient({ initialData, searchParams }: VideoLibraryClientProps) {
-      // Get current URL params instead of using the old searchParams prop
+export function VideoLibraryClient({ initialData }: VideoLibraryClientProps) {
+  // Get current URL params instead of using the old searchParams prop
   const currentSearchParams = useSearchParams();
   
   // Convert current URL params to the format expected by the hook

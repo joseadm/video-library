@@ -7,7 +7,7 @@ jest.mock('@/hooks/use-new-video-form')
 
 // Mock Next.js components
 jest.mock('next/link', () => {
-  return function MockLink({ children, href, ...props }: any) {
+  return function MockLink({ children, href, ...props }: React.ComponentProps<'a'>) {
     return <a href={href} {...props}>{children}</a>
   }
 })

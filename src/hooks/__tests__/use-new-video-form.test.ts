@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react'
 import { useNewVideoForm } from '../use-new-video-form'
 
 // Mock fetch globally
-global.fetch = jest.fn()
+global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>
 
 // Mock environment variable
 process.env.NEXT_PUBLIC_API_URL = 'https://localhost:4000'
@@ -36,7 +36,7 @@ describe('useNewVideoForm', () => {
     return {
       preventDefault,
       currentTarget: form,
-    } as any
+    } as unknown as React.FormEvent<HTMLFormElement>
   }
 
   describe('form submission', () => {

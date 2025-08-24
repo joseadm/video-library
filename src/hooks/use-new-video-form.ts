@@ -31,8 +31,6 @@ export function useNewVideoForm(options: UseNewVideoFormOptions = {}) {
       const formData = new FormData(form);
       const title = (formData.get("title") as string)?.trim();
       if (!title) {
-        console.log("Title is required");
-
         toast.error("Title is required");
         return;
       }

@@ -1,13 +1,9 @@
-import { VideoRecord, VideoData, SearchParams } from "@/types";
+import { VideoData, SearchParams } from "@/types";
 import { PAGINATION, SEARCH, API } from "@/lib/constants";
 import { VideoFetchError, TimeoutError, NetworkError } from "@/lib/errors";
 
 export async function fetchVideos(searchParams: SearchParams): Promise<VideoData> {
   try {
-
-    console.log("TESTER...");
-
-
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
     const url = new URL('/videos', apiUrl);
     
@@ -30,8 +26,6 @@ export async function fetchVideos(searchParams: SearchParams): Promise<VideoData
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), API.DEFAULT_TIMEOUT);
 
-    console.log('URL: ', url.toString())
-
     const response = await fetch(url, { 
       cache: 'no-store',
       headers: {
@@ -39,8 +33,6 @@ export async function fetchVideos(searchParams: SearchParams): Promise<VideoData
       },
       signal: controller.signal,
     });
-
-    console.log('Fetch response: ', response)
 
     clearTimeout(timeoutId);
 
@@ -53,8 +45,6 @@ export async function fetchVideos(searchParams: SearchParams): Promise<VideoData
 
     const data = await response.json();
 
-    console.log('RESPONSE: ', data)
-
     return data;
   } catch (error) {
     if (error instanceof VideoFetchError) {
@@ -66,8 +56,6 @@ export async function fetchVideos(searchParams: SearchParams): Promise<VideoData
         'Request timeout - video service is not responding'
       );
     }
-
-    console.log('Error: ', error)
     
     // Network or other errors
     throw new NetworkError(

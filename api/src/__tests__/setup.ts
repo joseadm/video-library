@@ -20,10 +20,10 @@ jest.mock('@prisma/client', () => ({
 }));
 
 // Global test utilities
-global.beforeEach(() => {
+beforeEach(() => {
   jest.clearAllMocks();
 });
 
-global.afterAll(async () => {
+afterAll(async () => {
   // Cleanup any test data
 }); 
