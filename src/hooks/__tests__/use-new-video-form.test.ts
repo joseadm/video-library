@@ -1,8 +1,13 @@
 import { renderHook, act } from '@testing-library/react'
 import { useNewVideoForm } from '../use-new-video-form'
+import { apiClient } from '@/lib/api-client'
 
-// Mock fetch globally
-global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>
+// Mock the API client
+jest.mock('@/lib/api-client', () => ({
+  apiClient: {
+    createVideo: jest.fn(),
+  },
+}))
 
 // Mock environment variable
 process.env.NEXT_PUBLIC_API_URL = 'https://localhost:4000'
@@ -42,10 +47,7 @@ describe('useNewVideoForm', () => {
   describe('form submission', () => {
     it('should handle successful video creation', async () => {
       const mockResponse = { id: '1', title: 'Test Video' }
-      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockResponse,
-      })
+      ;(apiClient.createVideo as jest.Mock).mockResolvedValueOnce(mockResponse)
 
       const { result } = renderHook(() => useNewVideoForm())
 
@@ -62,25 +64,18 @@ describe('useNewVideoForm', () => {
       })
 
       expect(mockForm.preventDefault).toHaveBeenCalled()
-      expect(global.fetch).toHaveBeenCalledWith('https://localhost:4000/videos', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          title: 'Test Video',
-          tags: ['test', 'demo'],
-          duration: 120,
-          views: 0,
-          thumbnail_url: 'https://example.com/thumb.jpg',
-        }),
+      expect(apiClient.createVideo).toHaveBeenCalledWith({
+        title: 'Test Video',
+        tags: ['test', 'demo'],
+        duration: 120,
+        views: 0,
+        thumbnail_url: 'https://example.com/thumb.jpg',
       })
     })
 
     it('should handle minimal video creation', async () => {
       const mockResponse = { id: '1', title: 'Minimal Video' }
-      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockResponse,
-      })
+      ;(apiClient.createVideo as jest.Mock).mockResolvedValueOnce(mockResponse)
 
       const { result } = renderHook(() => useNewVideoForm())
 
@@ -96,13 +91,9 @@ describe('useNewVideoForm', () => {
         await result.current.onSubmit(mockForm)
       })
 
-      expect(global.fetch).toHaveBeenCalledWith('https://localhost:4000/videos', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          title: 'Minimal Video',
-          tags: [],
-        }),
+      expect(apiClient.createVideo).toHaveBeenCalledWith({
+        title: 'Minimal Video',
+        tags: [],
       })
     })
   })
@@ -120,7 +111,7 @@ describe('useNewVideoForm', () => {
         await result.current.onSubmit(mockForm)
       })
 
-      expect(global.fetch).not.toHaveBeenCalled()
+      expect(apiClient.createVideo).not.toHaveBeenCalled()
     })
 
     it('should show error for invalid thumbnail URL', async () => {
@@ -136,7 +127,7 @@ describe('useNewVideoForm', () => {
         await result.current.onSubmit(mockForm)
       })
 
-      expect(global.fetch).not.toHaveBeenCalled()
+      expect(apiClient.createVideo).not.toHaveBeenCalled()
     })
 
     it('should show error for invalid duration', async () => {
@@ -152,7 +143,7 @@ describe('useNewVideoForm', () => {
         await result.current.onSubmit(mockForm)
       })
 
-      expect(global.fetch).not.toHaveBeenCalled()
+      expect(apiClient.createVideo).not.toHaveBeenCalled()
     })
 
     it('should show error for invalid views', async () => {
@@ -168,17 +159,14 @@ describe('useNewVideoForm', () => {
         await result.current.onSubmit(mockForm)
       })
 
-      expect(global.fetch).not.toHaveBeenCalled()
+      expect(apiClient.createVideo).not.toHaveBeenCalled()
     })
   })
 
   describe('tag processing', () => {
     it('should process comma-separated tags correctly', async () => {
       const mockResponse = { id: '1', title: 'Test Video' }
-      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockResponse,
-      })
+      ;(apiClient.createVideo as jest.Mock).mockResolvedValueOnce(mockResponse)
 
       const { result } = renderHook(() => useNewVideoForm())
 
@@ -194,22 +182,15 @@ describe('useNewVideoForm', () => {
         await result.current.onSubmit(mockForm)
       })
 
-      expect(global.fetch).toHaveBeenCalledWith('https://localhost:4000/videos', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          title: 'Test Video',
-          tags: ['tag1', 'tag2', 'tag3'],
-        }),
+      expect(apiClient.createVideo).toHaveBeenCalledWith({
+        title: 'Test Video',
+        tags: ['tag1', 'tag2', 'tag3'],
       })
     })
 
     it('should filter out empty tags', async () => {
       const mockResponse = { id: '1', title: 'Test Video' }
-      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockResponse,
-      })
+      ;(apiClient.createVideo as jest.Mock).mockResolvedValueOnce(mockResponse)
 
       const { result } = renderHook(() => useNewVideoForm())
 
@@ -225,13 +206,9 @@ describe('useNewVideoForm', () => {
         await result.current.onSubmit(mockForm)
       })
 
-      expect(global.fetch).toHaveBeenCalledWith('https://localhost:4000/videos', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          title: 'Test Video',
-          tags: ['tag1', 'tag2', 'tag3'],
-        }),
+      expect(apiClient.createVideo).toHaveBeenCalledWith({
+        title: 'Test Video',
+        tags: ['tag1', 'tag2', 'tag3'],
       })
     })
   })

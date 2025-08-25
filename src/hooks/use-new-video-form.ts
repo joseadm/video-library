@@ -3,6 +3,7 @@
 import { useCallback, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import type { CreateVideoInput } from "@/types";
+import { apiClient } from "@/lib/api-client";
 
 export interface UseNewVideoFormOptions {
   onSuccessRedirect?: string;
@@ -71,22 +72,7 @@ export function useNewVideoForm(options: UseNewVideoFormOptions = {}) {
 
       if (thumbnail_url) payload.thumbnail_url = thumbnail_url;
 
-      const promise = fetch(`${process.env.NEXT_PUBLIC_API_URL}/videos`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(payload),
-      }).then(async (res) => {
-        if (!res.ok) {
-          const { error } = await res
-            .json()
-            .catch(() => ({ error: "Failed to create" }));
-          throw new Error(error || "Failed to create");
-        }
-        return res.json();
-      }).catch(() => {
-        // Handle network errors (like when server is down)
-        throw new Error("Failed to save");
-      });
+      const promise = apiClient.createVideo(payload);
 
       try {
         await toast.promise(promise, {

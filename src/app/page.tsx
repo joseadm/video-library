@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { VideoLibraryClient } from "@/components/video-library-client";
-import { fetchVideos } from "@/lib/api";
+import { fetchVideos } from "@/lib/api-client";
 import Loading from "@/app/loading";
 
 interface PageProps {

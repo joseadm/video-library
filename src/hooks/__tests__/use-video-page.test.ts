@@ -124,7 +124,13 @@ describe('useVideoPage', () => {
       expect(result.current.error).toBe(null)
       expect(global.fetch).toHaveBeenCalledWith(
         expect.anything(),
-        { cache: 'no-store' }
+        { 
+          cache: 'no-store',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          signal: expect.any(AbortSignal),
+        }
       )
       
       // Verify fetch was called
@@ -141,7 +147,7 @@ describe('useVideoPage', () => {
       })
 
       expect(result.current.error).toBeInstanceOf(Error)
-      expect(result.current.error?.message).toBe('Network error')
+      expect(result.current.error?.message).toBe('Failed to connect to video service')
       expect(result.current.data).toBe(null)
     })
 
@@ -158,7 +164,8 @@ describe('useVideoPage', () => {
       })
 
       expect(result.current.error).toBeInstanceOf(Error)
-      expect(result.current.error?.message).toBe('Failed to load videos')
+      expect(result.current.error?.message).toBe('Failed to fetch videos: undefined')
+      expect(result.current.data).toBe(null)
     })
 
     it('should include all search params in fetch URL', async () => {
@@ -181,7 +188,13 @@ describe('useVideoPage', () => {
       await waitFor(() => {
         expect(global.fetch).toHaveBeenCalledWith(
           expect.anything(),
-          { cache: 'no-store' }
+          { 
+            cache: 'no-store',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            signal: expect.any(AbortSignal),
+          }
         )
         
         // Verify fetch was called
@@ -401,7 +414,8 @@ describe('useVideoPage', () => {
       })
 
       expect(result.current.error).toBeInstanceOf(Error)
-      expect(result.current.error?.message).toBe('Failed to load')
+      expect(result.current.error?.message).toBe('Failed to connect to video service')
+      expect(result.current.data).toBe(null)
     })
 
     it('should handle undefined search params gracefully', async () => {

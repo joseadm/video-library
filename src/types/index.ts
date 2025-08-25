@@ -39,32 +39,3 @@ export interface SearchParams {
   page?: string;
   perPage?: string;
 }
-
-// Form types
-export interface VideoFormData {
-  title: string;
-  tags: string;
-  thumbnailUrl: string;
-  duration: string;
-  views: string;
-}
-
-// UI types
-export interface PaginationProps {
-  totalPages: number;
-  pages: number[];
-  currentPage: number;
-  prevPage?: number;
-  nextPage?: number;
-  hasPrev: boolean;
-  hasNext: boolean;
-  buildQuery: (page: number) => Record<string, string>;
-}
-
-export interface SearchFormProps {
-  q?: string;
-  tag?: string;
-  from?: string;
-  to?: string;
-  perPage: number;
-} 

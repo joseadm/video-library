@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { PLACEHOLDER_URL } from "@/lib/constants";
 
 interface Props {
   title: string;
@@ -12,7 +13,8 @@ interface Props {
 
 export function VideoCard({ title, thumbnail_url, created_at, tags }: Props) {
   const [loaded, setLoaded] = useState(false);
-  const src = thumbnail_url;
+  const [hasError, setHasError] = useState(false);
+  const src = hasError ? PLACEHOLDER_URL : thumbnail_url;
 
   return (
     <li className="flex flex-col gap-2">
@@ -27,6 +29,7 @@ export function VideoCard({ title, thumbnail_url, created_at, tags }: Props) {
             className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"}`}
             onLoad={() => setLoaded(true)}
             onError={() => {
+              setHasError(true);
               setLoaded(true);
             }}
           />
