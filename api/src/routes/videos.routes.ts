@@ -20,6 +20,8 @@ const ListQuerySchema = {
   properties: {
     q: { type: 'string' },
     tag: { type: 'string' },
+    from: { type: 'string' },
+    to: { type: 'string' },
     sort: { type: 'string', enum: ['asc', 'desc'], default: 'desc' },
     page: { type: 'integer', minimum: 1, default: 1 },
     perPage: { type: 'integer', minimum: 1, maximum: 100, default: 12 },

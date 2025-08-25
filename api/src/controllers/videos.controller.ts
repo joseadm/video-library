@@ -3,8 +3,16 @@ import { ListQuerySchema, CreateBodySchema } from '../schemas/videos.schema';
 import { listVideosService, createVideoService } from '../services/videos.service';
 
 export async function listVideosController(req: FastifyRequest, reply: FastifyReply) {
-  const q = ListQuerySchema.parse(req.query);
-  const result = await listVideosService({ q: q.q, tag: q.tag, sort: q.sort, page: q.page, perPage: q.perPage });
+  const q = ListQuerySchema.parse(req.query);  
+  const result = await listVideosService({ 
+    q: q.q, 
+    tag: q.tag, 
+    from: q.from, 
+    to: q.to, 
+    sort: q.sort, 
+    page: q.page, 
+    perPage: q.perPage 
+  });  
   return reply.send(result);
 }
 

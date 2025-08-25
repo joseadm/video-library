@@ -4,28 +4,47 @@ import crypto from 'node:crypto';
 export interface ListParams {
   q?: string;
   tag?: string;
+  from?: string;
+  to?: string;
   sort: 'asc' | 'desc';
   page: number;
   perPage: number;
 }
 
 export async function countVideos(params: Omit<ListParams, 'page' | 'perPage' | 'sort'> & { sort?: 'asc' | 'desc' }) {
+  console.log('🔍 countVideos params:', params);
+  
   const where: any = {
     AND: [
       params.q ? { title: { contains: params.q } } : {},
       params.tag ? { tags: { some: { tag: { name: params.tag } } } } : {},
+      params.from ? { createdAt: { gte: new Date(params.from) } } : {},
+      params.to ? { createdAt: { lte: new Date(params.to) } } : {},
     ],
   };
-  return prisma.video.count({ where });
+  
+  console.log('🔍 countVideos where clause:', JSON.stringify(where, null, 2));
+  
+  const count = await prisma.video.count({ where });
+  console.log('🔍 countVideos result:', count);
+  
+  return count;
 }
 
 export async function listVideos(params: ListParams) {
+  console.log('🔍 listVideos params:', params);
+  
   const where: any = {
     AND: [
       params.q ? { title: { contains: params.q } } : {},
       params.tag ? { tags: { some: { tag: { name: params.tag } } } } : {},
+      params.from ? { createdAt: { gte: new Date(params.from) } } : {},
+      params.to ? { createdAt: { lte: new Date(params.to) } } : {},
     ],
   };
+  
+  console.log('🔍 listVideos where clause:', JSON.stringify(where, null, 2));
+  
   const items = await prisma.video.findMany({
     where,
     orderBy: { createdAt: params.sort },
@@ -33,6 +52,10 @@ export async function listVideos(params: ListParams) {
     skip: (params.page - 1) * params.perPage,
     take: params.perPage,
   });
+  
+  console.log('🔍 listVideos found items:', items.length);
+  console.log('🔍 listVideos first item date:', items[0]?.createdAt);
+  
   return items.map((v) => ({
     id: v.id,
     title: v.title,

@@ -1,7 +1,7 @@
 import { countVideos, createVideo as repoCreate, listVideos as repoList, ListParams } from '../repositories/videos.repo';
 
 export async function listVideosService(params: ListParams) {
-  const total = await countVideos({ q: params.q, tag: params.tag, sort: params.sort });
+  const total = await countVideos({ q: params.q, tag: params.tag, from: params.from, to: params.to, sort: params.sort });
   const totalPages = Math.max(1, Math.ceil(total / params.perPage));
   const current = Math.min(Math.max(1, params.page), totalPages);
   const items = await repoList({ ...params, page: current });

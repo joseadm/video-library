@@ -4,6 +4,8 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 export const ListQuerySchema = z.object({
   q: z.string().optional(),
   tag: z.string().optional(),
+  from: z.string().optional(),
+  to: z.string().optional(),
   sort: z.enum(['asc', 'desc']).default('desc'),
   page: z.coerce.number().int().min(1).default(1),
   perPage: z.coerce.number().int().min(1).max(100).default(12),
