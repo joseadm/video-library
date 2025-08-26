@@ -10,7 +10,7 @@ jest.mock('@/lib/api-client', () => ({
 }))
 
 // Mock environment variable
-process.env.NEXT_PUBLIC_API_URL = 'https://localhost:4000'
+process.env.NEXT_PUBLIC_API_URL = 'http://localhost:4000'
 
 // Mock toast to avoid complexity
 jest.doMock('react-hot-toast', () => ({

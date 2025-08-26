@@ -9,11 +9,11 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=4000
+      - DATABASE_URL=file:./dev.db
     volumes:
       - ./api:/app
       - /app/node_modules
-    depends_on:
-      - db
+      - sqlite_data:/app/prisma
     networks:
       - video-library
 
@@ -26,6 +26,8 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+      - DOCKER_ENV=true
+      - NEXT_DOCKER_API_URL=http://host.docker.internal:4000
       - NEXT_PUBLIC_API_URL=http://localhost:4000
     volumes:
       - .:/app
@@ -35,23 +37,11 @@ services:
       - api
     networks:
       - video-library
-
-  # Database Service
-  db:
-    image: postgres:15-alpine
-    environment:
-      - POSTGRES_DB=video_library
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - video-library
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 volumes:
-  postgres_data:
+  sqlite_data:
 
 networks:
   video-library:

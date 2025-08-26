@@ -5,7 +5,7 @@ import { useVideoPage } from '../use-video-page'
 global.fetch = jest.fn()
 
 // Mock environment variable
-process.env.NEXT_PUBLIC_API_URL = 'https://localhost:4000'
+process.env.NEXT_PUBLIC_API_URL = 'http://localhost:4000'
 
 // Mock Next.js navigation
 jest.mock('next/navigation', () => ({

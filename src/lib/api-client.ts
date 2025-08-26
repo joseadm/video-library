@@ -9,13 +9,23 @@ class ApiClient {
   private timeout: number;
 
   constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+    const isDocker = process.env.DOCKER_ENV === "true";
+
+    if (isDocker) {
+      // Running in Docker container: use host.docker.internal
+      this.baseUrl =
+        process.env.NEXT_DOCKER_API_URL || "http://host.docker.internal:4000";
+    } else {
+      // Running locally on host machine: use localhost
+      this.baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+    }
+
     this.timeout = API.DEFAULT_TIMEOUT;
   }
 
   // Generic request method with timeout and error handling
   private async request<T>(
-    endpoint: string, 
+    endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
     const controller = new AbortController();
@@ -23,13 +33,15 @@ class ApiClient {
 
     try {
       // Handle both full URLs and relative endpoints
-      const url = endpoint.startsWith('http') ? endpoint : `${this.baseUrl}${endpoint}`;
-      
+      const url = endpoint.startsWith("http")
+        ? endpoint
+        : `${this.baseUrl}${endpoint}`;
+
       const response = await fetch(url, {
         ...options,
         signal: controller.signal,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           ...options.headers,
         },
       });
@@ -46,30 +58,32 @@ class ApiClient {
       return response.json();
     } catch (error) {
       clearTimeout(timeoutId);
-      
+
       if (error instanceof VideoFetchError) {
         throw error;
       }
-      
-      if (error instanceof Error && error.name === 'AbortError') {
-        throw new TimeoutError('Request timeout - video service is not responding');
+
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new TimeoutError(
+          "Request timeout - video service is not responding"
+        );
       }
-      
-      throw new NetworkError('Failed to connect to video service');
+
+      throw new NetworkError("Failed to connect to video service");
     }
   }
 
   // Video API methods
   async fetchVideos(searchParams: SearchParams): Promise<VideoData> {
-    const url = buildApiUrl(this.baseUrl, '/videos', searchParams);
+    const url = buildApiUrl(this.baseUrl, "/videos", searchParams);
     return this.request<VideoData>(url, {
-      cache: 'no-store',
+      cache: "no-store",
     });
   }
 
   async createVideo(videoData: CreateVideoInput): Promise<VideoData> {
-    return this.request<VideoData>('/videos', {
-      method: 'POST',
+    return this.request<VideoData>("/videos", {
+      method: "POST",
       body: JSON.stringify(videoData),
     });
   }
@@ -79,8 +93,8 @@ class ApiClient {
 export const apiClient = new ApiClient();
 
 // Convenience functions for backward compatibility
-export const fetchVideos = (searchParams: SearchParams) => 
+export const fetchVideos = (searchParams: SearchParams) =>
   apiClient.fetchVideos(searchParams);
 
-export const createVideo = (videoData: CreateVideoInput) => 
-  apiClient.createVideo(videoData); 
+export const createVideo = (videoData: CreateVideoInput) =>
+  apiClient.createVideo(videoData);

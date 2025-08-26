@@ -16,7 +16,6 @@ export function SortSelect({ defaultValue }: SortSelectProps) {
   }
 
   return (
-    <div className="w-32">
       <div className="relative">
         <select
           name="sort"
@@ -29,6 +28,5 @@ export function SortSelect({ defaultValue }: SortSelectProps) {
         </select>
         <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
       </div>
-    </div>
   );
 }

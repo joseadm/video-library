@@ -1,11 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { VideoCard } from "@/components/video-card";
 import { VideoRecord, VideoData } from "@/types";
 import { SearchForm } from "@/components/search-form";
 import { Pagination } from "@/components/pagination";
-import { SortSelect } from "@/components/sort-select";
 import { RetryNotice } from "@/components/retry-notice";
 import { useVideoPage } from "@/hooks/use-video-page";
 import { useSearchParams } from "next/navigation";
@@ -57,19 +55,9 @@ export function VideoLibraryClient({ initialData }: VideoLibraryClientProps) {
         <p className="text-sm text-gray-600">Manage your video collection</p>
       </div>
       <section className="flex flex-col gap-4">
-        <div className="flex flex-wrap items-end justify-between gap-3 mb-5">
-          <div className="flex gap-2">
-            <Link
-              href="/"
-              className="flex h-10 w-32 px-3 whitespace-nowrap items-center btn btn-secondary"
-            >
-              All Videos
-            </Link>
-            <SortSelect defaultValue={sort} />
-          </div>
-          <div className="flex items-center gap-3">
-            <SearchForm q={q} tag={tag} from={from} to={to} perPage={perPage} />
-          </div>
+        <div className="flex flex-col gap-4 mb-5">
+          {/* Search form with all filters */}
+          <SearchForm q={q} tag={tag} from={from} to={to} perPage={perPage} sort={sort} />
         </div>
         
         {!displayData?.items ? (

@@ -5,7 +5,7 @@ A full-stack TypeScript application for browsing and managing a video library. B
 ## 🚀 Tech Stack
 
 ### Frontend
-- **Next.js 14** (App Router, React Server Components) - Modern React framework with excellent performance
+- **Next.js 15** (App Router, React Server Components) - Modern React framework with excellent performance
 - **TypeScript** - Type safety across the entire application
 - **Tailwind CSS** - Utility-first CSS framework for rapid UI development
 - **React Testing Library** - Component testing with user-centric approach
@@ -43,23 +43,28 @@ cd api
 pnpm install
 
 # Set up environment variables
-cp .env.example .env  # if exists, or create .env with:
-# DATABASE_URL="file:./dev.db"
+# Create .env file with the following content:
+echo 'DATABASE_URL="file:./dev.db"' > .env
 
 # Generate Prisma client
 pnpm prisma generate
 
 # Run database migrations
-pnpm prisma migrate dev
+pnpm prisma migrate dev --name init
 
 # Seed the database (optional)
-pnpm prisma db seed
+npx ts-node prisma/seed.ts
 
 # Start the backend server
 pnpm dev
 ```
 
 The backend will be available at `http://localhost:4000`
+
+**Important Notes:**
+- The database file will be created in the `prisma/` directory as `dev.db`
+- Make sure to run migrations before starting the server
+- If you get migration errors, you may need to delete the `prisma/migrations/` folder and start fresh
 
 #### Frontend Setup
 ```bash
@@ -70,8 +75,9 @@ cd ..
 pnpm install
 
 # Set environment variables
-cp .env.example .env  # if exists, or create .env with:
-# NEXT_PUBLIC_API_URL=http://localhost:4000
+# Create .env.local file with the following content:
+echo 'NEXT_PUBLIC_API_URL=http://localhost:4000' > .env.local
+echo 'NEXT_DOCKER_API_URL=http://host.docker.internal:4000' > .env.local
 
 # Start the frontend development server
 pnpm dev
@@ -79,11 +85,20 @@ pnpm dev
 
 The frontend will be available at `http://localhost:3000`
 
+**Important Notes:**
+- The frontend needs to know where the API is running
+- Make sure the backend is running before starting the frontend
+- If port 3000 is in use, Next.js will automatically use the next available port
+
 ### Option 2: Docker Compose (Recommended)
 
 ```bash
 # Start both frontend and backend services
 docker-compose up -d
+
+# Wait for services to start, then set up the database
+docker-compose exec api npx prisma migrate dev --name init
+docker-compose exec api npx ts-node prisma/seed.ts
 
 # View logs
 docker-compose logs -f
@@ -91,6 +106,12 @@ docker-compose logs -f
 # Stop services
 docker-compose down
 ```
+
+**Important Notes:**
+- Docker services need database setup after first startup
+- The frontend will be available at `http://localhost:3000`
+- The API will be available at `http://localhost:4000`
+- Both services use SQLite databases (separate from local development)
 
 ### Running Tests
 
@@ -164,7 +185,7 @@ pnpm type-check        # Run TypeScript compiler check
 
 ### User Experience
 - **Video Details Modal**: Click-to-expand video information without page navigation
-- **Inline Editing**: Edit video titles and tags directly in the grid
+- **Inline Editing and Deleting**: Edit and delete video titles and tags directly in the grid
 - **Bulk Operations**: Multi-select videos for batch tag updates or deletion
 - **Advanced Search**: Filter by duration, views, and date ranges
 - **Tag Management**: Dedicated tags page with usage statistics

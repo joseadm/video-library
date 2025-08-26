@@ -1,17 +1,25 @@
 import React from "react";
-import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { SortSelect } from "@/components/sort-select";
+
 export interface SearchFormProps {
   q?: string;
   tag?: string;
   from?: string;
   to?: string;
   perPage: number;
+  sort?: string;
 }
 
-export function SearchForm({ q, tag, from, to, perPage }: SearchFormProps) {
-    const router = useRouter(); // Move this to top level
-
+export function SearchForm({
+  q,
+  tag,
+  from,
+  to,
+  perPage,
+  sort,
+}: SearchFormProps) {
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -45,68 +53,78 @@ export function SearchForm({ q, tag, from, to, perPage }: SearchFormProps) {
   const qId = "q-input";
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-wrap items-end gap-3"
-      id="search-form"
-    >
+    <form onSubmit={handleSubmit} className="w-full" id="search-form">
       <input type="hidden" name="perPage" value={String(perPage)} />
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor={fromId} className="text-sm leading-none text-[#181111]">
-          Start Date
-        </label>
-        <input
-        id={fromId}
-          type="date"
-          name="from"
-          defaultValue={from}
-          className="h-10 w-40 rounded-lg bg-[#f4f0f0] px-4 text-[#181111] placeholder:text-[#886364] border-none focus:outline-none"
-        />
+      <div className="grid grid-cols-2 gap-3 items-end md:grid-cols-6">
+        {/* Sort Select */}
+        <div className="col-span-1">
+          <SortSelect defaultValue={sort || "desc"} />
+        </div>
+
+        {/* Tag */}
+        <div className="col-span-1">
+          <input
+            id={tagId}
+            name="tag"
+            defaultValue={tag}
+            placeholder="Tag"
+            className="h-10 w-full rounded-lg bg-[#f4f0f0] px-4 text-[#181111] placeholder:text-[#886364] border-none focus:outline-none"
+          />
+        </div>
+
+        {/* Start Date */}
+        <div className="col-span-1">
+          <label
+            htmlFor={fromId}
+            className="text-sm leading-none text-[#181111]"
+          >
+            Start Date
+          </label>
+          <input
+            id={fromId}
+            type="date"
+            name="from"
+            defaultValue={from}
+            className="h-10 w-full rounded-lg bg-[#f4f0f0] px-4 text-[#181111] placeholder:text-[#886364] border-none focus:outline-none"
+          />
+        </div>
+
+        {/* End Date */}
+        <div className="col-span-1">
+          <label htmlFor={toId} className="text-sm leading-none text-[#181111]">
+            End Date
+          </label>
+          <input
+            id={toId}
+            type="date"
+            name="to"
+            defaultValue={to}
+            className="h-10 w-full rounded-lg bg-[#f4f0f0] px-4 text-[#181111] placeholder:text-[#886364] border-none focus:outline-none"
+          />
+        </div>
+
+        {/* Search by Title */}
+        <div className="col-span-2 md:col-span-1">
+          <input
+            id={qId}
+            name="q"
+            defaultValue={q}
+            placeholder="Search by Title"
+            className="h-10 w-full rounded-lg bg-[#f4f0f0] px-4 text-[#181111] placeholder:text-[#886364] border-none focus:outline-none"
+          />
+        </div>
+
+        {/* Apply Button */}
+        <div className="col-span-2 md:col-span-1">
+          <button
+            type="submit"
+            className="btn btn-primary h-10 w-full md:px-6 md:whitespace-nowrap"
+          >
+            Apply
+          </button>
+        </div>
       </div>
-
-      <div className="flex flex-col gap-1">
-        <label htmlFor={toId} className="text-sm leading-none text-[#181111]">
-          End Date
-        </label>
-        <input
-          id={toId}
-          type="date"
-          name="to"
-          defaultValue={to}
-          className="h-10 w-40 rounded-lg bg-[#f4f0f0] px-4 text-[#181111] placeholder:text-[#886364] border-none focus:outline-none"
-        />
-      </div>
-
-      <label htmlFor={tagId} className="sr-only">
-        Tag
-      </label>
-      <input
-        id={tagId}
-        name="tag"
-        defaultValue={tag}
-        placeholder="Tag"
-        className="h-10 rounded-lg bg-[#f4f0f0] px-4 text-[#181111] placeholder:text-[#886364] border-none focus:outline-none"
-      />
-
-      <label htmlFor={qId} className="sr-only">
-        Search by Title
-      </label>
-      <input
-        id={qId}
-        name="q"
-        defaultValue={q}
-        placeholder="Search by Title"
-        className="h-10 rounded-lg bg-[#f4f0f0] px-4 text-[#181111] placeholder:text-[#886364] border-none focus:outline-none"
-      />
-
-      <button
-        type="submit"
-        aria-label="Search"
-        className="btn btn-primary flex h-10 w-10 items-center justify-center"
-      >
-        <Search />
-      </button>
     </form>
   );
 }
