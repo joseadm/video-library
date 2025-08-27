@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <nav className="container mx-auto px-4 py-3 flex items-center justify-between">
             <Link
               href="/"
-              className="font-bold text-lg tracking-[-0.015em] text-[#181111] hover:opacity-90"
+              className="font-bold text-2xl tracking-[-0.015em] text-[#181111] hover:opacity-90"
             >
               Video Manager
             </Link>

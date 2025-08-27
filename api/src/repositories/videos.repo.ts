@@ -11,9 +11,7 @@ export interface ListParams {
   perPage: number;
 }
 
-export async function countVideos(params: Omit<ListParams, 'page' | 'perPage' | 'sort'> & { sort?: 'asc' | 'desc' }) {
-  console.log('🔍 countVideos params:', params);
-  
+export async function countVideos(params: Omit<ListParams, 'page' | 'perPage' | 'sort'> & { sort?: 'asc' | 'desc' }) {  
   const where: any = {
     AND: [
       params.q ? { title: { contains: params.q } } : {},
@@ -22,18 +20,12 @@ export async function countVideos(params: Omit<ListParams, 'page' | 'perPage' | 
       params.to ? { createdAt: { lte: new Date(params.to) } } : {},
     ],
   };
-  
-  console.log('🔍 countVideos where clause:', JSON.stringify(where, null, 2));
-  
+    
   const count = await prisma.video.count({ where });
-  console.log('🔍 countVideos result:', count);
-  
   return count;
 }
 
 export async function listVideos(params: ListParams) {
-  console.log('🔍 listVideos params:', params);
-  
   const where: any = {
     AND: [
       params.q ? { title: { contains: params.q } } : {},
@@ -42,9 +34,7 @@ export async function listVideos(params: ListParams) {
       params.to ? { createdAt: { lte: new Date(params.to) } } : {},
     ],
   };
-  
-  console.log('🔍 listVideos where clause:', JSON.stringify(where, null, 2));
-  
+    
   const items = await prisma.video.findMany({
     where,
     orderBy: { createdAt: params.sort },
@@ -52,9 +42,6 @@ export async function listVideos(params: ListParams) {
     skip: (params.page - 1) * params.perPage,
     take: params.perPage,
   });
-  
-  console.log('🔍 listVideos found items:', items.length);
-  console.log('🔍 listVideos first item date:', items[0]?.createdAt);
   
   return items.map((v) => ({
     id: v.id,

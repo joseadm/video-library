@@ -18,7 +18,7 @@ export default function NewVideoPage() {
         >
           <ArrowLeft />
         </Link>
-        <h1 className="text-2xl font-semibold text-[#181111]">
+        <h1 className="text-xl font-semibold text-[#181111]">
           Add a New Video
         </h1>
       </div>

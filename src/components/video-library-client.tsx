@@ -51,7 +51,7 @@ export function VideoLibraryClient({ initialData }: VideoLibraryClientProps) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold">My Library</h1>
+        <h1 className="text-xl font-semibold">My Library</h1>
         <p className="text-sm text-gray-600">Manage your video collection</p>
       </div>
       <section className="flex flex-col gap-4">
